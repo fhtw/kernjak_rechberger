@@ -16,5 +16,16 @@ namespace SWE1_webserver_KR
         {
             InitializeComponent();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {   
+            label1.Text = "Running...";
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
