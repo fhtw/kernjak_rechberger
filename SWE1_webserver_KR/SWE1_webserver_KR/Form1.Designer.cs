@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.button1 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.listlog = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
             // button1
@@ -52,12 +53,23 @@
             this.label1.Size = new System.Drawing.Size(0, 17);
             this.label1.TabIndex = 1;
             // 
+            // listlog
+            // 
+            this.listlog.FormattingEnabled = true;
+            this.listlog.ItemHeight = 16;
+            this.listlog.Location = new System.Drawing.Point(12, 253);
+            this.listlog.Name = "listlog";
+            this.listlog.Size = new System.Drawing.Size(258, 132);
+            this.listlog.TabIndex = 2;
+            this.listlog.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.DimGray;
             this.ClientSize = new System.Drawing.Size(282, 397);
+            this.Controls.Add(this.listlog);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -73,6 +85,7 @@
 
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ListBox listlog;
     }
 }
 
