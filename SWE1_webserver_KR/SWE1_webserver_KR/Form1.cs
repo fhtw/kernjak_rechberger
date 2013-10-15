@@ -9,6 +9,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Reflection;
 //Folgene Namespaces werden für Sockets benötigt
 using System.Net;
 using System.Net.Sockets;
@@ -270,9 +271,19 @@ namespace SWE1_webserver_KR
                     p.outputStream.BaseStream.Flush();
                 }
 
+
+
                 Console.WriteLine("request: {0}", p.http_url);
                 p.writeSuccess();
-                p.outputStream.WriteLine("<html><body><h1>test server</h1>");
+
+                Assembly plugins = Assembly.LoadFrom("tempPlugin.dll");
+                Object test = plugins.CreateInstance("iPlugin");
+                MethodInfo m = plugins.GetType("iPlugin").GetMethod("checkRequest");
+                Object ret = m.Invoke(test, new Object[] { p.http_url });
+
+                p.outputStream.WriteLine(ret);
+
+                p.outputStream.WriteLine("<body><h1>test server</h1>");
                 p.outputStream.WriteLine("Current Time: " + DateTime.Now.ToString());
                 p.outputStream.WriteLine("url : {0}", p.http_url);
 
