@@ -276,21 +276,48 @@ namespace SWE1_webserver_KR
                 Console.WriteLine("request: {0}", p.http_url);
                 p.writeSuccess();
 
-                Assembly plugins = Assembly.LoadFrom("tempPlugin.dll");
-                Object test = plugins.CreateInstance("iPlugin");
-                MethodInfo m = plugins.GetType("iPlugin").GetMethod("checkRequest");
-                Object ret = m.Invoke(test, new Object[] { p.http_url });
+                ArrayList plugins = new ArrayList();
 
-                p.outputStream.WriteLine(ret);
+//                string[] assemblys = Directory.GetFiles(".dll");
+                Type type = typeof(SWE1_webserver_KR.iPlugin);
 
+                foreach(string dll in Directory.GetFiles(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "*.dll")){
+                    Assembly Aplugin = Assembly.LoadFrom(dll);
+
+                    foreach(Type pluType in Aplugin.GetExportedTypes()){
+                        if (pluType.IsPublic && pluType.IsClass && pluType.GetInterface(type.FullName) != null)
+                        {
+                            plugins.Add(Aplugin.CreateInstance(pluType.FullName));
+                        }
+                        else
+                        {
+
+                        }
+                    }
+                }
+
+
+                p.outputStream.WriteLine("<head><style>th{border:1px solid black;}</style></head>");
                 p.outputStream.WriteLine("<body><h1>test server</h1>");
                 p.outputStream.WriteLine("Current Time: " + DateTime.Now.ToString());
                 p.outputStream.WriteLine("url : {0}", p.http_url);
+
+                foreach (iPlugin addin in plugins)
+                {
+                    if (addin.checkRequest(p.http_url) == true)
+                    {   
+                        p.outputStream.WriteLine(addin.handleRequest(p.http_url));
+                    }
+                }
 
                 p.outputStream.WriteLine("<form method=post action=/form>");
                 p.outputStream.WriteLine("<input type=text name=foo value=foovalue>");
                 p.outputStream.WriteLine("<input type=submit name=bar value=barvalue>");
                 p.outputStream.WriteLine("</form>");
+
+     //           string[] cut = p.http_url.Split('/');
+    //            p.outputStream.WriteLine("<h1>"+cut[1]+"</h1>");
+
             }
 
             public override void handlePOSTRequest(HttpProcessor p, StreamReader inputData)
@@ -310,7 +337,7 @@ namespace SWE1_webserver_KR
         private void button1_Click(object sender, EventArgs e)
         {
             HttpServer httpServer;
-            httpServer = new MyHttpServer(8080);
+            httpServer = new MyHttpServer(2020);
 
             label1.Text = "Running...";
             Thread thread = new Thread(new ThreadStart(httpServer.listen));

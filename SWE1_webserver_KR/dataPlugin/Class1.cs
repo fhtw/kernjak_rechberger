@@ -12,7 +12,7 @@ namespace dataPlugin
         public bool checkRequest(string input){
 
             string[] url = input.Split('/');
-            if(url[1].Equals("temp")){
+            if(url[1].Equals("data")){
                 return true;
             } else {
                 return false;
@@ -21,7 +21,7 @@ namespace dataPlugin
 
         public string handleRequest(string input){
 
-            return "<html><head></head><body><p>Hello World <br/> Data</p></body></html>";
+            return "<p>Hello World <br/> Data</p>";
         }
     }
 }

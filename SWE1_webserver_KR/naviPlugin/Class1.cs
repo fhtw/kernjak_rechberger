@@ -11,14 +11,21 @@ namespace naviPlugin
     {
         public bool checkRequest(string input)
         {
-
-            return true;
+            string[] url = input.Split('/');
+            if (url[1].Equals("navi"))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public string handleRequest(string input)
         {
 
-            return "<html><head></head><body><p>Hello World <br/> Navi</p></body></html>";
+            return "<p>Hello World <br/> Navi</p>";
         }
     }
 }
