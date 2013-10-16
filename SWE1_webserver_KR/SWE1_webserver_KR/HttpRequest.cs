@@ -53,7 +53,7 @@ namespace SWE1_webserver_KR
                 string value = line.Substring(pos, line.Length - pos);
                 Console.WriteLine("header: {0}:{1}", name, value);
                 httpHeaders[name] = value;
-
+                
                 break;
 
             }
