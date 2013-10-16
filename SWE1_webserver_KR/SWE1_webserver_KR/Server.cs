@@ -19,59 +19,28 @@ namespace SWE1_webserver_KR
 {
     class Server
     {
-        public abstract class HttpServer
-        {
-
-            protected int port;
-            TcpListener listener;
-            bool is_active = true;
-
-            public HttpServer(int port)
-            {
-                this.port = port;
-            }
-
-            public void listen()
-            {
-                listener = new TcpListener(port);
-                listener.Start();
-                while (is_active)
-                {
-                    TcpClient s = listener.AcceptTcpClient();
-                    HttpProcessor processor = new HttpProcessor(s, this);
-                    Thread thread = new Thread(new ThreadStart(processor.process));
-                    thread.Start();
-                    Thread.Sleep(1);
-                }
-            }
-
-            public abstract void handleGETRequest(HttpProcessor p);
-            public abstract void handlePOSTRequest(HttpProcessor p, StreamReader inputData);
-        }
-
+        
 
         public class HttpProcessor
         {
             private TcpClient socket;
-            private HttpServer srv;
+            private MyHttpServer srv;
 
             private Stream inputStream;
             private StreamWriter outputStream;
             public StreamWriter OutPutStream { get { return outputStream; } }
+            HttpUrl url = new HttpUrl();
+            HttpRequest hr = new HttpRequest();
 
-            private String http_method;
-            private String http_url;
-            private String http_protocol_versionstring;
-            private Hashtable httpHeaders = new Hashtable();
 
             public string GetUrl ()
             {
-            return http_url;
+            return hr.GetUrl();
             }
 
             private static int MAX_POST_SIZE = 10 * 1024 * 1024; // 10MB
 
-            public HttpProcessor(TcpClient s, HttpServer srv)
+            public HttpProcessor(TcpClient s, MyHttpServer srv)
             {
                 this.socket = s;
                 this.srv = srv;
@@ -102,13 +71,23 @@ namespace SWE1_webserver_KR
                 outputStream = new StreamWriter(new BufferedStream(socket.GetStream()));
                 try
                 {
-                    parseRequest();
-                    readHeaders();
-                    if (http_method.Equals("GET"))
+                    hr.parseRequest(streamReadLine( inputStream));
+                    bool trigger = true;
+                    while (trigger)
+                    {
+                        string input = streamReadLine(inputStream);
+                        if (input == "")
+                        { break; }
+                        else
+                        {
+                           hr.readHeaders(input);
+                        }
+                    }
+                    if (hr.GetMethod().Equals("GET"))
                     {
                         handleGETRequest();
                     }
-                    else if (http_method.Equals("POST"))
+                    else if (hr.GetMethod().Equals("POST"))
                     {
                         handlePOSTRequest();
                     }
@@ -122,56 +101,10 @@ namespace SWE1_webserver_KR
                 inputStream = null; outputStream = null; // bs = null;            
                 socket.Close();
             }
-
-            private void parseRequest()
-            {
-                String request = streamReadLine(inputStream);
-                string[] tokens = request.Split(' ');
-                if (tokens.Length != 3)
-                {
-                    throw new Exception("invalid http request line");
-                }
-                http_method = tokens[0].ToUpper();
-                http_url = tokens[1];
-                http_protocol_versionstring = tokens[2];
-
-              
-
-                Console.WriteLine("starting: " + request);
-            }
-
-            private void readHeaders()
-            {
-                Console.WriteLine("readHeaders()");
-                String line;
-                while ((line = streamReadLine(inputStream)) != null)
-                {
-                    if (line.Equals(""))
-                    {
-                        Console.WriteLine("got headers");
-                        return;
-                    }
-
-                    int separator = line.IndexOf(':');
-                    if (separator == -1)
-                    {
-                        throw new Exception("invalid http header line: " + line);
-                    }
-                    String name = line.Substring(0, separator);
-                    int pos = separator + 1;
-                    while ((pos < line.Length) && (line[pos] == ' '))
-                    {
-                        pos++; // strip any spaces
-                    }
-
-                    string value = line.Substring(pos, line.Length - pos);
-                    Console.WriteLine("header: {0}:{1}", name, value);
-                    httpHeaders[name] = value;
-                }
-            }
-
+    
             private void handleGETRequest()
             {
+                //HttpRequest.handleGETRequest(this);
                 srv.handleGETRequest(this);
             }
 
@@ -187,9 +120,9 @@ namespace SWE1_webserver_KR
                 Console.WriteLine("get post data start");
                 int content_len = 0;
                 MemoryStream ms = new MemoryStream();
-                if (this.httpHeaders.ContainsKey("Content-Length"))
+                if (hr.getHeaders().ContainsKey("Content-Length"))
                 {
-                    content_len = Convert.ToInt32(this.httpHeaders["Content-Length"]);
+                    content_len = Convert.ToInt32(hr.getHeaders()["Content-Length"]);
                     if (content_len > MAX_POST_SIZE)
                     {
                         throw new Exception(
@@ -243,13 +176,33 @@ namespace SWE1_webserver_KR
 
 
 
-        public class MyHttpServer : HttpServer
+        public class MyHttpServer 
         {
+            
+            protected int port;
+            TcpListener listener;
+            bool is_active = true;
+
             public MyHttpServer(int port)
-                : base(port)
             {
+                this.port = port;
             }
-            public override void handleGETRequest(HttpProcessor p)
+
+            public void listen()
+            {
+                listener = new TcpListener(port);
+                listener.Start();
+                while (is_active)
+                {
+                    TcpClient s = listener.AcceptTcpClient();
+                    HttpProcessor processor = new HttpProcessor(s, this);
+                    Thread thread = new Thread(new ThreadStart(processor.process));
+                    thread.Start();
+                    Thread.Sleep(1);
+                }
+            }
+          
+            public  void handleGETRequest(HttpProcessor p)
             {
                 string url = p.GetUrl();
 
@@ -274,7 +227,7 @@ namespace SWE1_webserver_KR
                 p.OutPutStream.WriteLine("</form>");
             }
 
-            public override void handlePOSTRequest(HttpProcessor p, StreamReader inputData)
+            public  void handlePOSTRequest(HttpProcessor p, StreamReader inputData)
             {
                 string url = p.GetUrl();
                 Console.WriteLine("POST request: {0}", url);

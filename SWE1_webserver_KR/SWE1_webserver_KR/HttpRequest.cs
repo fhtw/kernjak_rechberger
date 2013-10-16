@@ -17,14 +17,75 @@ using System.Threading;
 
 namespace SWE1_webserver_KR
 {
-    class HttpRequest
+    
+    public class HttpRequest
     {
-        private Stream inputStream;
-        public StreamWriter outputStream;
+        private Hashtable httpHeaders = new Hashtable();
+        public Hashtable getHeaders()
+        {
+            return httpHeaders;
+        }
+        public void readHeaders(string request)
+        {
+            Console.WriteLine("readHeaders()");
+            String line;
+            //  while ((line = streamReadLine(inputStream)) != null)
+            while ((line = request) != null)
+            {
+                if (line.Equals(""))
+                {
+                    Console.WriteLine("got headers");
+                    return;
+                }
 
-        public String http_method;
-        public String http_url;
-        public String http_protocol_versionstring;
-        public Hashtable httpHeaders = new Hashtable();
+                int separator = line.IndexOf(':');
+                if (separator == -1)
+                {
+                    throw new Exception("invalid http header line: " + line);
+                }
+                String name = line.Substring(0, separator);
+                int pos = separator + 1;
+                while ((pos < line.Length) && (line[pos] == ' '))
+                {
+                    pos++; // strip any spaces
+                }
+
+                string value = line.Substring(pos, line.Length - pos);
+                Console.WriteLine("header: {0}:{1}", name, value);
+                httpHeaders[name] = value;
+
+                break;
+
+            }
+        }
+        private String http_method;
+        private String http_url;
+        private String http_protocol_versionstring;
+
+        public string GetUrl()
+        {
+            return http_url;
+        }
+        public string GetMethod()
+        {
+            return http_method;
+        }
+        public void parseRequest(string request)
+        {
+            // String request = streamReadLine(inputStream);
+            string[] tokens = request.Split(' ');
+            if (tokens.Length != 3)
+            {
+                throw new Exception("invalid http request line");
+            }
+            http_method = tokens[0].ToUpper();
+            http_url = tokens[1];
+            http_protocol_versionstring = tokens[2];
+
+
+
+            Console.WriteLine("starting: " + request);
+        }
+        
     }
 }
