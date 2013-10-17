@@ -276,7 +276,7 @@ namespace SWE1_webserver_KR
                 Console.WriteLine("request: {0}", p.http_url);
                 p.writeSuccess();
 
-                ArrayList plugins = new ArrayList();
+  /*              ArrayList plugins = new ArrayList();
 
 //                string[] assemblys = Directory.GetFiles(".dll");
                 Type type = typeof(SWE1_webserver_KR.iPlugin);
@@ -295,25 +295,30 @@ namespace SWE1_webserver_KR
                         }
                     }
                 }
+                */
 
+                pluginM plugins = new pluginM();
+                plugins.loadPlugins();
 
                 p.outputStream.WriteLine("<head><style>th{border:1px solid black;}</style></head>");
                 p.outputStream.WriteLine("<body><h1>test server</h1>");
                 p.outputStream.WriteLine("Current Time: " + DateTime.Now.ToString());
                 p.outputStream.WriteLine("url : {0}", p.http_url);
 
-                foreach (iPlugin addin in plugins)
+            /*    foreach (iPlugin addin in plugins)
                 {
                     if (addin.checkRequest(p.http_url) == true)
                     {   
                         p.outputStream.WriteLine(addin.handleRequest(p.http_url));
                     }
-                }
+                }*/
 
                 p.outputStream.WriteLine("<form method=post action=/form>");
                 p.outputStream.WriteLine("<input type=text name=foo value=foovalue>");
                 p.outputStream.WriteLine("<input type=submit name=bar value=barvalue>");
                 p.outputStream.WriteLine("</form>");
+
+                p.outputStream.WriteLine(plugins.handleRequest(p.http_url));
 
      //           string[] cut = p.http_url.Split('/');
     //            p.outputStream.WriteLine("<h1>"+cut[1]+"</h1>");
