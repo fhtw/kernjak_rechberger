@@ -101,8 +101,27 @@ namespace SWE1_webserver_KR
 
            private void handleGETRequest()
            {
-               //HttpRequest.handleGETRequest(this);
-               srv.handleGETRequest(this);
+               string url = GetUrl();
+
+               if (url.Equals("/BILD"))
+               {
+                   Stream fs = File.Open("../../test.png", FileMode.Open);
+
+                   writeSuccess("image/png");
+                   fs.CopyTo(OutPutStream.BaseStream);
+                   OutPutStream.BaseStream.Flush();
+               }
+
+               Console.WriteLine("request: {0}", url);
+              writeSuccess();
+               OutPutStream.WriteLine("<html><body><h1>test server</h1>");
+               OutPutStream.WriteLine("Current Time: " + DateTime.Now.ToString());
+              OutPutStream.WriteLine("url : {0}", url);
+
+             OutPutStream.WriteLine("<form method=post action=/form>");
+               OutPutStream.WriteLine("<input type=text name=foo value=foovalue>");
+               OutPutStream.WriteLine("<input type=submit name=bar value=barvalue>");
+               OutPutStream.WriteLine("</form>");
            }
 
            private const int BUF_SIZE = 4096;
@@ -153,7 +172,13 @@ namespace SWE1_webserver_KR
                Console.WriteLine("get post data end");
                StreamReader inputData = new StreamReader(ms);
                string data = inputData.ReadToEnd();
-               srv.handlePOSTRequest(this, data);
+               string url = GetUrl();
+               Console.WriteLine("POST request: {0}", url);
+
+               writeSuccess();
+              OutPutStream.WriteLine("<html><body><h1>test server</h1>");
+              OutPutStream.WriteLine("<a href=/test>return</a><p>");
+               OutPutStream.WriteLine("postbody: <pre>{0}</pre>", data);
 
            }
 
