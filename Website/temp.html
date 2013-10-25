@@ -4,31 +4,54 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <style>
 	#wrapper{
-		width:800px;
+		width:39%;
 		height:100%;
 		background-color:grey;
 		margin:auto;
 	}
+	#DateForm{
+		margin-left:40%;
+	}
 	th{
-			border: 1px solid black;
+		width: 6em;
+		height: 2em;
+		border: 1px solid black;
+		background-color:white;
 	}
 	table{
 		margin:auto;
+		margin-top:4%;
+	}
+	#previous, #next{
+		background-color:black;
+		color:white;
+		width:9em;
+		cursor:pointer;
+	}
+	
+	#previous p, #next p{
+		margin: 5% 13% 5% 11%;;
 	}
 </style>
 <title>Paint</title>
 </head>
 <body>
 	<div id="wrapper">
-		<button> Previous Week </button>
-		<button> Next Week </button>
+		<div id="DateForm">
+			<p style="margin-left:1em; margin-bottom:0; Color:white; padding-top:1%;">Enter Date or Range</p>
+			<input type="text" style="length:5em; height:1.1em;"/>
+		</div>
+		<div id="previous" style="float:left;"><p>Previous Week</p></div>
+		<div id="next" style="float:right;"><p>Next Week</p></div>
 		<table>
 			<tr>
 				<th>Date</th>
+				<th>Time</th>
 				<th>Temperature</th>
 			</tr>
 			<tr>
 				<th>15.10.2013</th>
+				<th>11:50:20</th>
 				<th>18&deg;</th>
 			</tr>
 		</table>

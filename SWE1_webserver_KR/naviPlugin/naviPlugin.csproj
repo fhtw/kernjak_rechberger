@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9706C27F-D462-4EA6-A81E-E4134B7C2D41}</ProjectGuid>
+    <ProjectGuid>{AE3A32EC-95E5-4E1E-AFB8-744F5076F7F9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>naviPlugin</RootNamespace>

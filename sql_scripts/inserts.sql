@@ -5,7 +5,6 @@ Alter Table Messdaten
 Alter Table Messdaten
 	alter column
 		Datum datetime null
-
 go
 
 insert into Messdaten (Temperatur, Datum)
@@ -17,7 +16,10 @@ update Messdaten
 
 Update Messdaten
 	set Datum = DATEADD(day, (ABS(CHECKSUM(NEWID())) % 3653), '2003-01-01')
+go
 
+Update Messdaten
+	set Datum = DATEADD(SECOND, (ABS(CHECKSUM(NEWID())) % 86399), Datum)
 go
 
 Alter Table Messdaten
