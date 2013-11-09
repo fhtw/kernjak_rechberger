@@ -18,7 +18,6 @@ namespace SWE1_webserver_KR
 {
     public class HttpUrl
     {
-        
         private string _webAddress;
         private Dictionary<string, string> _webParameters = new Dictionary<string, string>();
 
@@ -71,8 +70,5 @@ namespace SWE1_webserver_KR
     }
 
         
-        }
-
-   
-    
+}
 
