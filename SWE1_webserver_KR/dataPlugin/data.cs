@@ -23,7 +23,7 @@ namespace dataPlugin
             }
         }
 
-        public string handleRequest(string input)
+        public string handleRequest(Dictionary<string, string> data)
         {
 
             return "<p>Hello World <br/> Data</p>";

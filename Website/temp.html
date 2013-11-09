@@ -38,11 +38,6 @@
         type="text/javascript"></script>
 <script>
 
-/*	temp?date=1.9.2013&type=next
-	temp?date=1.9.2013-1.10.2013&type=previous
-	temp?date=1.9.2013-1.10.2013&type=xml
-	temp?date=1.9.2013-1.10.2013&type=current
-*/	
 	function xml(){
 		var url = window.location.href;		
 		if(url.indexOf("&type") !== -1){
@@ -52,28 +47,6 @@
 		url = url + "&type=xml";
 		window.location.replace(url);
 		
-	}
-	
-	function previous(){
-		var url = window.location.href;		
-		if(url.indexOf("&type") !== -1){
-			var parts = url.split("&type");
-			url = parts[0];
-		}
-		url = url + "&type=previous";
-		window.location.replace(url);
-		
-		
-	}
-	
-	function next(){
-		var url = window.location.href;		
-		if(url.indexOf("&type") !== -1){
-			var parts = url.split("&type");
-			url = parts[0];
-		}
-		url = url + "&type=next";
-		window.location.replace(url);
 	}
 	
 	function current(e){
@@ -98,13 +71,11 @@
 </head>
 <body>
 	<div id="wrapper">
-		<div id="DateForm">
-			<p style="margin-left:1em; margin-bottom:0; Color:white; padding-top:1%;">Enter Date or Range</p>
+		<div id="DateForm" style="margin-left:39.45%; margin-bottom:2%;" >
+			<p style="Color:white; padding-top:1%; margin-left:3%;">Enter Date or Range</p>
 			<input id="dateInput" onkeypress="current(event);" type="text" style="length:5em; height:1.1em;"/>
 		</div>
-		<div id="previous" style="float:left;" onclick="previous();"><p>Previous Week</p></div>
-		<div id="xml" style="position:absolute; left:46.5%"  onclick="xml();"><p>Download XML</p></div>
-		<div id="next" style="float:right;"  onclick="next();"><p>Next Week</p></div>
+		<div id="xml" style="margin:auto; padding-top:0.01%; padding-bottom:0,01%;"  onclick="xml();"><p>Download XML</p></div>
 		<table>
 			<tr>
 				<th>Date</th>

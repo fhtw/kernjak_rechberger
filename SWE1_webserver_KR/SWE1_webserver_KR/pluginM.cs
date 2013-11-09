@@ -36,13 +36,13 @@ namespace SWE1_webserver_KR
 
         }
 
-        public string handleRequest(string url)
+        public string handleRequest(string url, Dictionary<string, string> data)
         {
             foreach (iPlugin addin in plugins)
                 {
                     if (addin.checkRequest(url) == true)
                     {   
-                        return(addin.handleRequest(url));
+                        return(addin.handleRequest(data));
                     }
                 }
             return "<h1>Plugin not available</h1>";

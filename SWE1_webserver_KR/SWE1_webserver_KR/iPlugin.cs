@@ -9,6 +9,6 @@ namespace SWE1_webserver_KR
     public interface iPlugin
     {
         bool checkRequest(string input);
-        string handleRequest(string input);
+        string handleRequest(Dictionary<string, string> data);
     }
 }

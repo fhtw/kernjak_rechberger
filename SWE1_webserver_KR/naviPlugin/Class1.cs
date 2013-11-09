@@ -15,7 +15,7 @@ namespace naviPlugin
             return true;
         }
 
-        public string handleRequest(string input)
+        public string handleRequest(Dictionary<string, string> data)
         {
 
             return "<html><head></head><body><p>Hello World <br/> Navi</p></body></html>";

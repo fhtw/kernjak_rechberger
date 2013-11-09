@@ -132,8 +132,22 @@ namespace SWE1_webserver_KR
                }
                else
                {
+                   
                    Console.WriteLine("request: {0}", url);
-                   writeSuccess();
+                  // writeSuccess("text/xml");
+
+                   pluginM plugins = new pluginM();
+                   plugins.loadPlugins();
+
+                   string response = plugins.handleRequest(url, data);
+                   if(response[0] == 'x'){
+                       response = response.Substring(1, response.Length - 1);
+                       writeSuccess("text/xml");
+                   } else {
+                       writeSuccess();
+                   }
+                   OutPutStream.WriteLine(response);
+                   /*
                    OutPutStream.WriteLine("<html><body><h1>test server</h1>");
                    OutPutStream.WriteLine("Current Time: " + DateTime.Now.ToString());
                    OutPutStream.WriteLine("url : {0}", url);
@@ -141,7 +155,7 @@ namespace SWE1_webserver_KR
                    OutPutStream.WriteLine("<form method=post action=/form>");
                    OutPutStream.WriteLine("<input type=text name=foo value=foovalue>");
                    OutPutStream.WriteLine("<input type=submit name=bar value=barvalue>");
-                   OutPutStream.WriteLine("</form>");
+                   OutPutStream.WriteLine("</form>");*/
                }
            }
 

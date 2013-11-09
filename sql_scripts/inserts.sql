@@ -15,7 +15,7 @@ update Messdaten
 	set Temperatur = ((ABS((CHECKSUM(NEWID()) % 10000)) / 100) +  20)% 40 
 
 Update Messdaten
-	set Datum = DATEADD(day, (ABS(CHECKSUM(NEWID())) % 3653), '2003-01-01')
+	set Datum = DATEADD(day, (ABS(CHECKSUM(NEWID())) % DATEDIFF(day, '2003-01-01', '2013-11-10')), '2003-01-01')
 go
 
 Update Messdaten
