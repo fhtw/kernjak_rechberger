@@ -61,10 +61,15 @@ namespace SWE1_webserver_KR
         private String http_method;
         private String http_url;
         private String http_protocol_versionstring;
+        HttpUrl httpurl = new HttpUrl();
 
         public string GetUrl()
         {
             return http_url;
+        }
+        public void SetUrl( string url)
+        {
+             http_url = url;
         }
         public string GetMethod()
         {
@@ -81,6 +86,8 @@ namespace SWE1_webserver_KR
             http_method = tokens[0].ToUpper();
             http_url = tokens[1];
             http_protocol_versionstring = tokens[2];
+
+            //httpurl.GetVar(http_url, this);
 
 
 

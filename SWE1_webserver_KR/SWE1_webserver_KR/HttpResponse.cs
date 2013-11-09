@@ -26,9 +26,9 @@ namespace SWE1_webserver_KR
            private Stream inputStream;
            private StreamWriter outputStream;
            public StreamWriter OutPutStream { get { return outputStream; } }
-           HttpUrl url = new HttpUrl();
+           HttpUrl hurl = new HttpUrl();
            HttpRequest hr = new HttpRequest();
-
+           Dictionary<string, string> data;
 
            public string GetUrl()
            {
@@ -75,7 +75,7 @@ namespace SWE1_webserver_KR
                        string input = streamReadLine(inputStream);
                        if (input == "")
                        { break; }
-                       else
+                       else 
                        {
                            hr.readHeaders(input);
                        }
@@ -101,27 +101,48 @@ namespace SWE1_webserver_KR
 
            private void handleGETRequest()
            {
-               string url = GetUrl();
 
-               if (url.Equals("/BILD"))
+               hurl.CWebURL(GetUrl());
+               data = hurl.WebParameters;
+               string url = hurl.WebAddress;
+
+               if (url.Equals("/impressum"))
                {
-                   Stream fs = File.Open("../../test.png", FileMode.Open);
+                   writeSuccess("file/html");
+                   Stream fs = File.Open("../../index.html", FileMode.Open);
+                   /* BinaryReader reader = new BinaryReader(fs);
+                    byte[] bytes = new byte[fs.Length];
+                    int read;
+                    String sResponse = "";
+                    int iTotBytes = 0;
+                    while ((read = reader.Read(bytes, 0, bytes.Length)) != 0)
+                    {
+                        // Read from the file and write the data to the network
+                        sResponse = sResponse + Encoding.ASCII.GetString(bytes, 0, read);
 
-                   writeSuccess("image/png");
+                        iTotBytes = iTotBytes + read;
+
+                    }
+                    reader.Close();
+                    fs.Close();
+                    OutPutStream.Write(bytes);*/
+
                    fs.CopyTo(OutPutStream.BaseStream);
                    OutPutStream.BaseStream.Flush();
                }
+               else
+               {
+                   Console.WriteLine("request: {0}", url);
+                   writeSuccess();
+                   OutPutStream.WriteLine("<html><body><h1>test server</h1>");
+                   OutPutStream.WriteLine("Current Time: " + DateTime.Now.ToString());
+                   OutPutStream.WriteLine("url : {0}", url);
 
-               Console.WriteLine("request: {0}", url);
-              writeSuccess();
-               OutPutStream.WriteLine("<html><body><h1>test server</h1>");
-               OutPutStream.WriteLine("Current Time: " + DateTime.Now.ToString());
-              OutPutStream.WriteLine("url : {0}", url);
-
-             OutPutStream.WriteLine("<form method=post action=/form>");
-               OutPutStream.WriteLine("<input type=text name=foo value=foovalue>");
-               OutPutStream.WriteLine("<input type=submit name=bar value=barvalue>");
-               OutPutStream.WriteLine("</form>");
+                   OutPutStream.WriteLine("<form method=post action=/form>");
+                   OutPutStream.WriteLine("<input type=text name=foo value=foovalue>");
+                   OutPutStream.WriteLine("<input type=submit name=bar value=barvalue>");
+                   OutPutStream.WriteLine("</form>");
+               }
            }
 
            private const int BUF_SIZE = 4096;
@@ -133,6 +154,9 @@ namespace SWE1_webserver_KR
                // we hand him needs to let him see the "end of the stream" at this content 
                // length, because otherwise he won't know when he's seen it all! 
 
+               hurl.CWebURL(GetUrl());
+               string url = hurl.WebAddress;
+               string pluginn = url.TrimStart('/');
                Console.WriteLine("get post data start");
                int content_len = 0;
                MemoryStream ms = new MemoryStream();
@@ -172,13 +196,16 @@ namespace SWE1_webserver_KR
                Console.WriteLine("get post data end");
                StreamReader inputData = new StreamReader(ms);
                string data = inputData.ReadToEnd();
-               string url = GetUrl();
-               Console.WriteLine("POST request: {0}", url);
+              // string url = GetUrl();
+               hurl.CWebURL(GetUrl());
+               hurl.PostParameters(data);
+               
+               Console.WriteLine("POST request: {0}", hurl.WebAddress);
 
                writeSuccess();
               OutPutStream.WriteLine("<html><body><h1>test server</h1>");
               OutPutStream.WriteLine("<a href=/test>return</a><p>");
-               OutPutStream.WriteLine("postbody: <pre>{0}</pre>", data);
+              OutPutStream.WriteLine("postbody: <pre>{0}</pre>", hurl.WebParameters["foo"]);
 
            }
 
