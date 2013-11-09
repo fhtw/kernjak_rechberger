@@ -11,6 +11,7 @@
 	}
 	#DateForm{
 		margin-left:40%;
+		margin-bottom:1%;
 	}
 	th{
 		width: 6em;
@@ -20,20 +21,42 @@
 	}
 	table{
 		margin:auto;
-		margin-top:4%;
+		margin-top:6%;
 	}
-	#previous, #next{
+	#previous, #next, #xml{
 		background-color:black;
 		color:white;
 		width:9em;
 		cursor:pointer;
 	}
 	
-	#previous p, #next p{
+	#previous p, #next p, #xml p{
 		margin: 5% 13% 5% 11%;;
 	}
 </style>
-<title>Paint</title>
+<script>
+	/tempt?date=1.9.2013&type=next
+	/tempt?date=1.9.2013-1.10.2013&type=previous
+	/tempt?date=1.9.2013-1.10.2013&type=xml
+	/tempt?date=1.9.2013-1.10.2013&type=current
+
+	function xml(){
+		
+	}
+	
+	function previous(){
+		
+	}
+	
+	function next(){
+		
+	}
+	
+	function current(){
+		
+	}
+</script>
+<title>Tempeture</title>
 </head>
 <body>
 	<div id="wrapper">
@@ -42,6 +65,7 @@
 			<input type="text" style="length:5em; height:1.1em;"/>
 		</div>
 		<div id="previous" style="float:left;"><p>Previous Week</p></div>
+		<div id="xml" style="position:absolute; left:46.5%"><p>Download XML</p></div>
 		<div id="next" style="float:right;"><p>Next Week</p></div>
 		<table>
 			<tr>
