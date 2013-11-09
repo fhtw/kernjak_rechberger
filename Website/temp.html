@@ -34,27 +34,65 @@
 		margin: 5% 13% 5% 11%;;
 	}
 </style>
+<script src="http://code.jquery.com/jquery-latest.min.js"
+        type="text/javascript"></script>
 <script>
-	/tempt?date=1.9.2013&type=next
-	/tempt?date=1.9.2013-1.10.2013&type=previous
-	/tempt?date=1.9.2013-1.10.2013&type=xml
-	/tempt?date=1.9.2013-1.10.2013&type=current
 
+/*	temp?date=1.9.2013&type=next
+	temp?date=1.9.2013-1.10.2013&type=previous
+	temp?date=1.9.2013-1.10.2013&type=xml
+	temp?date=1.9.2013-1.10.2013&type=current
+*/	
 	function xml(){
+		var url = window.location.href;		
+		if(url.indexOf("&type") !== -1){
+			var parts = url.split("&type");
+			url = parts[0];
+		}
+		url = url + "&type=xml";
+		window.location.replace(url);
 		
 	}
 	
 	function previous(){
+		var url = window.location.href;		
+		if(url.indexOf("&type") !== -1){
+			var parts = url.split("&type");
+			url = parts[0];
+		}
+		url = url + "&type=previous";
+		window.location.replace(url);
+		
 		
 	}
 	
 	function next(){
-		
+		var url = window.location.href;		
+		if(url.indexOf("&type") !== -1){
+			var parts = url.split("&type");
+			url = parts[0];
+		}
+		url = url + "&type=next";
+		window.location.replace(url);
 	}
 	
-	function current(){
+	function current(e){
+		if(e.which == 13){	
+		var date = document.getElementById("dateInput").value;
 		
+		var url = window.location.href;
+		
+		if(url.indexOf("?") !== -1){
+			var parts = url.split("?");
+			url = parts[0];
+		}
+		
+		url = url + "?date=" + date + "&type=current";
+		
+		window.location.replace(url);
+		}	
 	}
+	
 </script>
 <title>Tempeture</title>
 </head>
@@ -62,11 +100,11 @@
 	<div id="wrapper">
 		<div id="DateForm">
 			<p style="margin-left:1em; margin-bottom:0; Color:white; padding-top:1%;">Enter Date or Range</p>
-			<input type="text" style="length:5em; height:1.1em;"/>
+			<input id="dateInput" onkeypress="current(event);" type="text" style="length:5em; height:1.1em;"/>
 		</div>
-		<div id="previous" style="float:left;"><p>Previous Week</p></div>
-		<div id="xml" style="position:absolute; left:46.5%"><p>Download XML</p></div>
-		<div id="next" style="float:right;"><p>Next Week</p></div>
+		<div id="previous" style="float:left;" onclick="previous();"><p>Previous Week</p></div>
+		<div id="xml" style="position:absolute; left:46.5%"  onclick="xml();"><p>Download XML</p></div>
+		<div id="next" style="float:right;"  onclick="next();"><p>Next Week</p></div>
 		<table>
 			<tr>
 				<th>Date</th>
