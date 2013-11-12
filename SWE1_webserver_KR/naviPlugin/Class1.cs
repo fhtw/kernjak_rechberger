@@ -11,8 +11,15 @@ namespace naviPlugin
     {
         public bool checkRequest(string input)
         {
-
-            return true;
+            string[] url = input.Split('/');
+            if (url[1].Equals("navi"))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public string handleRequest(Dictionary<string, string> data)

@@ -27,8 +27,26 @@ namespace tempPlugin
 
         public string handleRequest(Dictionary<string, string> data)
         {
-
+            try
+            {
+                System.Console.WriteLine(data["date"]);
+            }
+            catch (System.Collections.Generic.KeyNotFoundException)
+            {
+                data.Add("date", "11.2013");
+            }
+            try
+            {
+                System.Console.WriteLine(data["type"]);
+            }
+            catch (System.Collections.Generic.KeyNotFoundException)
+            {
+                data.Add("type", "display");
+            }
+   
 //            Console.WriteLine(data["date"]);
+//            data.Add("date", "2013");
+
             string answer;
             string query;
 
