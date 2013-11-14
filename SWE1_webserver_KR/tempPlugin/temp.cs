@@ -12,6 +12,10 @@ namespace tempPlugin
 {
     public class tempPlugin : iPlugin
     {
+        public string getName()
+        {
+            return "temp";
+        }
         public bool checkRequest(string input)
         {
             string[] url = input.Split('/');
@@ -27,21 +31,14 @@ namespace tempPlugin
 
         public string handleRequest(Dictionary<string, string> data)
         {
-            try
-            {
-                System.Console.WriteLine(data["date"]);
-            }
-            catch (System.Collections.Generic.KeyNotFoundException)
-            {
-                data.Add("date", "11.2013");
-            }
-            try
-            {
-                System.Console.WriteLine(data["type"]);
-            }
-            catch (System.Collections.Generic.KeyNotFoundException)
+
+            if (!data.ContainsKey("type"))
             {
                 data.Add("type", "display");
+            }
+            if (!data.ContainsKey("date"))
+            {
+                data.Add("date", "11.2013");
             }
    
 //            Console.WriteLine(data["date"]);
@@ -280,7 +277,7 @@ namespace tempPlugin
 
             } else {
 
-                answer = "<!DOCTYPE html><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /><style> #wrapper{  width:39%;  height:100%;  background-color:grey;  margin:auto; } #DateForm{  margin-left:40%;  margin-bottom:1%; } th{  width: 6em;  height: 2em;  border: 1px solid black;  background-color:white; } table{  margin:auto;  margin-top:6%; } #previous, #next, #xml{  background-color:black;  color:white;  width:9em;  cursor:pointer; }  #previous p, #next p, #xml p{  margin: 5% 13% 5% 11%;; }</style><script src=\"http://code.jquery.com/jquery-latest.min.js\"        type=\"text/javascript\"></script><script> function xml(){  var url = window.location.href;    if(url.indexOf(\"&type\") !== -1){   var parts = url.split(\"&type\");   url = parts[0];  }  url = url + \"&type=xml\";  window.location.replace(url);   }  function current(e){  if(e.which == 13){   var date = document.getElementById(\"dateInput\").value;    var url = window.location.href;    if(url.indexOf(\"?\") !== -1){   var parts = url.split(\"?\");   url = parts[0];  }    url = url + \"?date=\" + date + \"&type=current\";    window.location.replace(url);  }  } </script><title>Tempeture</title></head><body> <div id=\"wrapper\">  <div id=\"DateForm\" style=\"margin-left:39.45%; margin-bottom:2%;\" >   <p style=\"Color:white; padding-top:1%; margin-left:3%;\">Enter Date or Range</p>   <input id=\"dateInput\" onkeypress=\"current(event);\" type=\"text\" style=\"length:5em; height:1.1em;\"/>  </div>  <div id=\"xml\" style=\"margin:auto; padding-top:0.01%; padding-bottom:0.01%;\"  onclick=\"xml();\"><p>Download XML</p></div>  <table>   <tr>    <th>Date</th>    <th>Time</th>    <th>Temperature</th>   </tr>";
+                answer = "<!DOCTYPE html><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /><style> #wrapper{  width:39%;  height:100%;  background-color:grey;  margin:auto; } #DateForm{  margin-left:40%;  margin-bottom:1%; } th{  width: 6em;  height: 2em;  border: 1px solid black;  background-color:white; } table{  margin:auto;  margin-top:6%; } #previous, #next, #xml{  background-color:black;  color:white;  width:9em;  cursor:pointer; }  #previous p, #next p, #xml p{  margin: 5% 13% 5% 11%;; }</style><script src=\"http://code.jquery.com/jquery-latest.min.js\"        type=\"text/javascript\"></script><script> function xml(){  var url = window.location.href;    if(url.indexOf(\"&type\") !== -1){   var parts = url.split(\"&type\");   url = parts[0];  }  url = url + \"&type=xml\";  window.location.replace(url);   }  function current(e){  if(e.which == 13){   var date = document.getElementById(\"dateInput\").value;    var url = window.location.href;    if(url.indexOf(\"?\") !== -1){   var parts = url.split(\"?\");   url = parts[0];  }    url = url + \"?date=\" + date + \"&type=display\";    window.location.replace(url);  }  } </script><title>Tempeture</title></head><body> <div id=\"wrapper\">  <div id=\"DateForm\" style=\"margin-left:39.45%; margin-bottom:2%;\" >   <p style=\"Color:white; padding-top:1%; margin-left:3%;\">Enter Date or Range</p>   <input id=\"dateInput\" onkeypress=\"current(event);\" type=\"text\" style=\"length:5em; height:1.1em;\"/>  </div>  <div id=\"xml\" style=\"margin:auto; padding-top:0.01%; padding-bottom:0.01%;\"  onclick=\"xml();\"><p>Download XML</p></div>  <table>   <tr>    <th>Date</th>    <th>Time</th>    <th>Temperature</th>   </tr>";
 
                 while (reader.Read())
                 {

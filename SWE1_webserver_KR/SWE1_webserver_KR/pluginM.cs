@@ -47,5 +47,18 @@ namespace SWE1_webserver_KR
                 }
             return "<h1>Plugin not available</h1>";
         }
+
+        public List<String> getNames()
+        {
+            List<String> names = new List<String>();
+
+//            names.Add("Hello");
+            foreach (iPlugin addin in plugins)
+            {
+                names.Add(addin.getName());
+            }
+
+            return names;
+        }
     }
 }

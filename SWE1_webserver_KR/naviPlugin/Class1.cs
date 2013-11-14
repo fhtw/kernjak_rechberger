@@ -9,6 +9,10 @@ namespace naviPlugin
 {
     public class naviPlugin : iPlugin
     {
+        public string getName()
+        {
+            return "navi";
+        }
         public bool checkRequest(string input)
         {
             string[] url = input.Split('/');

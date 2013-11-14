@@ -10,5 +10,6 @@ namespace SWE1_webserver_KR
     {
         bool checkRequest(string input);
         string handleRequest(Dictionary<string, string> data);
+        string getName();
     }
 }

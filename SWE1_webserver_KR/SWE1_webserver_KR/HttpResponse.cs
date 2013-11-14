@@ -138,6 +138,7 @@ namespace SWE1_webserver_KR
 
                    pluginM plugins = new pluginM();
                    plugins.loadPlugins();
+                   List<string> names = plugins.getNames();
 
                    string response = plugins.handleRequest(url, data);
                    if(response[0] == 'x'){

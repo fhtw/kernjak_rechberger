@@ -9,6 +9,10 @@ namespace dataPlugin
 {
     public class dataPlugin : iPlugin
     {
+        public string getName()
+        {
+            return "";
+        }
         public bool checkRequest(string input)
         {
 
