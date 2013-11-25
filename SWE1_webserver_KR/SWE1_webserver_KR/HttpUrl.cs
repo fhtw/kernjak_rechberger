@@ -48,6 +48,7 @@ namespace SWE1_webserver_KR
             foreach(string pair in pairs)
             {
                 string[] parts = pair.Split('=');
+                parts[1] = parts[1].Replace("%20", " ");
                 _webParameters.Add(parts[0].ToString(), parts[1].ToString());
             }
         }
