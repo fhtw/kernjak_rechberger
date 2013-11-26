@@ -108,27 +108,24 @@ namespace SWE1_webserver_KR
 
                if (url.Equals("/impressum"))
                {
-                   writeSuccess("file/html");
                    Stream fs = File.Open("../../index.html", FileMode.Open);
-                   /* BinaryReader reader = new BinaryReader(fs);
-                    byte[] bytes = new byte[fs.Length];
-                    int read;
-                    String sResponse = "";
-                    int iTotBytes = 0;
-                    while ((read = reader.Read(bytes, 0, bytes.Length)) != 0)
-                    {
-                        // Read from the file and write the data to the network
-                        sResponse = sResponse + Encoding.ASCII.GetString(bytes, 0, read);
+                   BinaryReader reader = new BinaryReader(fs);
+                   byte[] bytes = new byte[fs.Length];
+                   int read;
+                   String sResponse = "";
+                   int iTotBytes = 0;
+                   while ((read = reader.Read(bytes, 0, bytes.Length)) != 0)
+                   {
+                       // Read from the file and write the data to the network
+                       sResponse = sResponse + Encoding.ASCII.GetString(bytes, 0, read);
 
-                        iTotBytes = iTotBytes + read;
+                       iTotBytes = iTotBytes + read;
 
-                    }
-                    reader.Close();
-                    fs.Close();
-                    OutPutStream.Write(bytes);*/
-
-                   fs.CopyTo(OutPutStream.BaseStream);
-                   OutPutStream.BaseStream.Flush();
+                   }
+                   reader.Close();
+                   fs.Close();
+                   writeSuccess("text/html", bytes.Length);
+                   OutPutStream.Write(sResponse);
                }
                else
                {
@@ -144,7 +141,16 @@ namespace SWE1_webserver_KR
                    if(response[0] == 'x'){
                        response = response.Substring(1, response.Length - 1);
                        writeSuccess("text/xml");
-                   } else {
+                   }
+                   else if (response[0] == 'd')
+                   {
+                       response = response.Substring(1, response.Length - 1);
+                       string[] splits = response.Split('ö');
+                       response = splits[1];
+                       writeSuccess("text/html");
+                   } 
+                   
+                   else {
                        writeSuccess();
                    }
                    OutPutStream.WriteLine(response);
@@ -224,14 +230,18 @@ namespace SWE1_webserver_KR
 
            }
 
-           public void writeSuccess(string content_type = "text/html")
+
+           public void writeSuccess(string content_type = "text/html", int content_length = 0)
            {
                outputStream.WriteLine("HTTP/1.0 200 OK");
                outputStream.WriteLine("Content-Type: " + content_type);
+               if (content_length != 0)
+               {
+                   outputStream.WriteLine("Content-Length: " + Convert.ToString(content_length));
+               }
                outputStream.WriteLine("Connection: close");
                outputStream.WriteLine("");
            }
-
            public void writeFailure()
            {
                outputStream.WriteLine("HTTP/1.0 404 File not found");
