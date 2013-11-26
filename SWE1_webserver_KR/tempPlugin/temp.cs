@@ -41,12 +41,9 @@ namespace tempPlugin
             {
                 data.Add("date", "2013");
             }
-   
-//            Console.WriteLine(data["date"]);
-//            data.Add("date", "2013");
+
 
             StringBuilder answer = new StringBuilder();
-            //string answer;
             string query;
             
 
@@ -62,8 +59,6 @@ namespace tempPlugin
 
                 CultureInfo culture = CultureInfo.CreateSpecificCulture("de-AT");
                 DateTimeStyles dateStyle = DateTimeStyles.None;
-   //             int count = data["date"].Length - data["date"].Replace(".", "").Length;
-    //            SqlParameter[] myparam = new SqlParameter[(count + 2)];
 
                 int countStart = range[0].Length - range[0].Replace(".", "").Length;
                 int countEnd = range[1].Length - range[1].Replace(".", "").Length;
@@ -72,17 +67,6 @@ namespace tempPlugin
 
                 if (countStart == 2 && countEnd == 2)
                 {
-                  /*  string intermediate = data["date"].Replace("-", ".");
-                    string[] dates = intermediate.Split('.');
-                    myparam[0] = new SqlParameter("@year", dates[2]);
-                    myparam[1] = new SqlParameter("@month", dates[1]);
-                    myparam[2] = new SqlParameter("@day", dates[0]);
-                    myparam[3] = new SqlParameter("@year2", dates[5]);
-                    myparam[4] = new SqlParameter("@month2", dates[4]);
-                    myparam[5] = new SqlParameter("@day2", dates[3]);
-                    query = "select Convert( nvarchar(30),Datum, 104),CONVERT(nvarchar(30), Datum, 108), Temperatur from Messdaten where Datum between convert(datetime, @month+'.'+@day+'.'+@year ) and convert(datetime, Dateadd(day, 1, @month2+'.'+@day2+'.'+@year2) ) order by Datum DESC";
-                    */
-                  //  IFormatProvider format = ;
                    
                     if(! (DateTime.TryParse(range[1], culture ,dateStyle,out end)))
                     {
@@ -93,20 +77,9 @@ namespace tempPlugin
                     {
                         return "Invalid Date";
                     }
-                    //System.Globalization.CultureInfo.CreateSpecificCulture("de-AT");
                 }
                 else if (countStart == 2 && countEnd == 1)
                 {
-
-                   /* string intermediate = data["date"].Replace("-", ".");
-                    string[] dates = intermediate.Split('.');
-                    myparam[0] = new SqlParameter("@year", dates[2]);
-                    myparam[1] = new SqlParameter("@month", dates[1]);
-                    myparam[2] = new SqlParameter("@day", dates[0]);
-                    myparam[3] = new SqlParameter("@year2", dates[4]);
-                    myparam[4] = new SqlParameter("@month2", dates[3]);
-                    query = "select Convert( nvarchar(30),Datum, 104),CONVERT(nvarchar(30), Datum, 108), Temperatur from Messdaten where Datum between convert(datetime, @month+'.'+@day+'.'+@year ) and convert(datetime, @month2+'.1.'+@year2 ) order by Datum DESC";
-                    */
 
                     if(! (DateTime.TryParse(range[1].Insert(0, "1."), culture ,dateStyle,out end)))
                     {
@@ -120,15 +93,6 @@ namespace tempPlugin
                 else if (countStart == 2 && countEnd == 0)
                 {
 
-                   /* string intermediate = data["date"].Replace("-", ".");
-                    string[] dates = intermediate.Split('.');
-                    myparam[0] = new SqlParameter("@year", dates[2]);
-                    myparam[1] = new SqlParameter("@month", dates[1]);
-                    myparam[2] = new SqlParameter("@day", dates[0]);
-                    myparam[3] = new SqlParameter("@year2", dates[3]);
-                    query = "select Convert( nvarchar(30),Datum, 104),CONVERT(nvarchar(30), Datum, 108), Temperatur from Messdaten where Datum between convert(datetime, @month+'.'+@day+'.'+@year ) and convert(datetime, '1.1.'+@year2) order by Datum DESC";
-                    */
-
                     if(! (DateTime.TryParse(range[1].Insert(0, "1.1."), culture ,dateStyle,out end)))
                     {
                         return "Invalid Date";
@@ -140,16 +104,6 @@ namespace tempPlugin
                 }
                 else if (countStart == 1 && countEnd == 2)
                 {
-
-                    /*string intermediate = data["date"].Replace("-", ".");
-                    string[] dates = intermediate.Split('.');
-                    myparam[0] = new SqlParameter("@year", dates[1]);
-                    myparam[1] = new SqlParameter("@month", dates[0]);
-                    myparam[2] = new SqlParameter("@year2", dates[4]);
-                    myparam[3] = new SqlParameter("@month2", dates[3]);
-                    myparam[4] = new SqlParameter("@day2", dates[2]);
-                    query = "select Convert( nvarchar(30),Datum, 104),CONVERT(nvarchar(30), Datum, 108), Temperatur from Messdaten where Datum between convert(datetime, @month+'.1.'+@year ) and convert(datetime, dateadd(day,1,@month2+'.'+@day2+'.'+@year2 )) order by Datum DESC";
-                    */
 
                     if (!(DateTime.TryParse(range[1], culture, dateStyle, out end)))
                     {
@@ -165,15 +119,6 @@ namespace tempPlugin
                 else if (countStart == 0 && countEnd == 2)
                 {
 
-                   /* string intermediate = data["date"].Replace("-", ".");
-                    string[] dates = intermediate.Split('.');
-                    myparam[0] = new SqlParameter("@year", dates[0]);
-                    myparam[1] = new SqlParameter("@year2", dates[3]);
-                    myparam[2] = new SqlParameter("@month2", dates[2]);
-                    myparam[3] = new SqlParameter("@day2", dates[1]);
-                    query = "select Convert( nvarchar(30),Datum, 104),CONVERT(nvarchar(30), Datum, 108), Temperatur from Messdaten where Datum between convert(datetime, '1.1.'+@year ) and convert(datetime, dateadd(day, 1, @month2+'.'+@day2+'.'+@year2 )) order by Datum DESC";
-                    */
-
                     if (!(DateTime.TryParse(range[1], culture, dateStyle, out end)))
                     {
                         return "Invalid Date";
@@ -187,14 +132,6 @@ namespace tempPlugin
                 else if (countStart == 0 && countEnd == 0)
                 {
 
-                   /* string intermediate = data["date"].Replace("-", ".");
-                    string[] dates = intermediate.Split('.');
-                    myparam[0] = new SqlParameter("@year", dates[0]);
-                    myparam[1] = new SqlParameter("@year2", dates[1]);
-                 
-                    query = "select Convert( nvarchar(30),Datum, 104),CONVERT(nvarchar(30), Datum, 108), Temperatur from Messdaten where Datum between convert(datetime, '1.1.'+@year ) and convert(datetime, '1.1.'+@year2 ) order by Datum DESC";
-                    */
-
                     if (!(DateTime.TryParse(range[1].Insert(0, "1.1."), culture, dateStyle, out end)))
                     {
                         return "Invalid Date";
@@ -206,14 +143,6 @@ namespace tempPlugin
                 }
                 else if (countStart == 0 && countEnd == 1)
                 {
-
-                   /* string intermediate = data["date"].Replace("-", ".");
-                    string[] dates = intermediate.Split('.');
-                    myparam[0] = new SqlParameter("@year", dates[0]);
-                    myparam[1] = new SqlParameter("@year2", dates[2]);
-                    myparam[2] = new SqlParameter("@month2", dates[1]);
-                    query = "select Convert( nvarchar(30),Datum, 104),CONVERT(nvarchar(30), Datum, 108), Temperatur from Messdaten where Datum between convert(datetime, '1.1.'+@year ) and convert(datetime, @month2+'.1.'+@year2 ) order by Datum DESC";
-                    */
 
                     if (!(DateTime.TryParse(range[1].Insert(0, "1."), culture, dateStyle, out end)))
                     {
@@ -227,15 +156,6 @@ namespace tempPlugin
                 else if (countStart == 1 && countEnd == 0)
                 {
 
-                   /* string intermediate = data["date"].Replace("-", ".");
-                    string[] dates = intermediate.Split('.');
-                    myparam[0] = new SqlParameter("@year", dates[1]);
-                    myparam[1] = new SqlParameter("@month", dates[0]);
-                    myparam[2] = new SqlParameter("@year2", dates[2]);
- 
-                    query = "select Convert( nvarchar(30),Datum, 104),CONVERT(nvarchar(30), Datum, 108), Temperatur from Messdaten where Datum between convert(datetime, @month+'.1.'+@year ) and convert(datetime, '1.1.'+@year2 ) order by Datum DESC";
-                    */
-
                     if (!(DateTime.TryParse(range[1].Insert(0, "1.1."), culture, dateStyle, out end)))
                     {
                         return "Invalid Date";
@@ -247,15 +167,6 @@ namespace tempPlugin
                 }
                 else if (countStart == 1 && countEnd == 1)
                 {
-
-                   /* string intermediate = data["date"].Replace("-", ".");
-                    string[] dates = intermediate.Split('.');
-                    myparam[0] = new SqlParameter("@year", dates[1]);
-                    myparam[1] = new SqlParameter("@month", dates[0]);
-                    myparam[2] = new SqlParameter("@year2", dates[3]);
-                    myparam[3] = new SqlParameter("@month2", dates[2]);
-                    query = "select Convert( nvarchar(30),Datum, 104),CONVERT(nvarchar(30), Datum, 108), Temperatur from Messdaten where Datum between convert(datetime, @month+'.1.'+@year ) and convert(datetime, @month2+'.1.'+@year2 ) order by Datum DESC";
-                    */
 
                     if (!(DateTime.TryParse(range[1].Insert(0, "1."), culture, dateStyle, out end)))
                     {
@@ -282,9 +193,6 @@ namespace tempPlugin
                     return "ERROR: Out of Range Date";
                 }
             } else {
-
-       //         int count = data["date"].Length - data["date"].Replace(".", "").Length;
-      //          SqlParameter[] myparam = new SqlParameter[(count + 1)];
 
                 if (count == 0)
                 {
@@ -352,9 +260,6 @@ namespace tempPlugin
                             time = xml.CreateAttribute("Time");
                             time.InnerText = MeasureDate.ToString("HH:mm:ss");
 
- //                           DateTime test = DateTime.Parse("24.8.2013", System.Globalization.CultureInfo.CreateSpecificCulture("de-at"));
- //                           String testing = test.ToString("dd.MM.yyyy");
-
                             dateNode.Attributes.Append(date);
                             dateNode.Attributes.Append(time);
 
@@ -367,30 +272,12 @@ namespace tempPlugin
 
                         }
 
-                 /*       StringBuilder sb = new StringBuilder();
-                        XmlWriterSettings settings = new XmlWriterSettings();
-                        settings.Indent = true;
-                        settings.IndentChars = "&nbsp;";
-                        settings.NewLineChars = "</br>";
-                        settings.NewLineHandling = NewLineHandling.Replace;
-
-                        using(XmlWriter writer = XmlWriter.Create(sb, settings)){
-                        xml.Save(writer);
-                        }*/
-
-                    //    answer = sb.ToString();
-
                         answer.Append(xml.OuterXml);
-
-             
-                      //  answer = answer.Replace("<", "&lt;");
-                      //  answer = answer.Replace(">", "&gt;");
-                      //  answer = answer.Replace("°", "&ordm;");
 
 
                     } else {
 
-                        answer.Append("<!DOCTYPE html><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /><style> #wrapper{  width:39%;  height:100%;  background-color:grey;  margin:auto; } #DateForm{  margin-left:40%;  margin-bottom:1%; } th{  width: 6em;  height: 2em;  border: 1px solid black;  background-color:white; } table{  margin:auto;  margin-top:6%; } #previous, #next, #xml{  background-color:black;  color:white;  width:9em;  cursor:pointer; }  #previous p, #next p, #xml p{  margin: 5% 13% 5% 11%;; }</style><script src=\"http://code.jquery.com/jquery-latest.min.js\"        type=\"text/javascript\"></script><script> function xml(){  var url = window.location.href;    if(url.indexOf(\"&type\") !== -1){   var parts = url.split(\"&type\");   url = parts[0];  }  url = url + \"&type=xml\";  window.location.replace(url);   }  function current(e){  if(e.which == 13){   var date = document.getElementById(\"dateInput\").value;    var url = window.location.href;    if(url.indexOf(\"?\") !== -1){   var parts = url.split(\"?\");   url = parts[0];  }    url = url + \"?date=\" + date + \"&type=display\";    window.location.replace(url);  }  } </script><title>Tempeture</title></head><body> <div id=\"wrapper\">  <div id=\"DateForm\" style=\"margin-left:39.45%; margin-bottom:2%;\" >   <p style=\"Color:white; padding-top:1%; margin-left:3%;\">Enter Date or Range</p>   <input id=\"dateInput\" onkeypress=\"current(event);\" type=\"text\" style=\"length:5em; height:1.1em;\"/>  </div>  <div id=\"xml\" style=\"margin:auto; padding-top:0.01%; padding-bottom:0.01%;\"  onclick=\"xml();\"><p>Download XML</p></div>  <table>   <tr>    <th>Date</th>    <th>Time</th>    <th>Temperature</th>   </tr>");
+                        answer.Append("<!DOCTYPE html><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /><style>#wrapper{width:39%;height:100%;background-color:grey;margin:auto;}#DateForm{margin-left:40%;margin-bottom:1%;}th{width: 6em;height: 2em;border: 1px solid black;background-color:white;}table{margin:auto;margin-top:6%;}#previous, #next, #xml{background-color:black;color:white;width:9em;cursor:pointer;}#previous p, #next p, #xml p{margin: 5% 13% 5% 11%;;}</style><script src=\"http://code.jquery.com/jquery-latest.min.js\"        type=\"text/javascript\"></script><script>function xml(){var url = window.location.href;if(url.indexOf(\"&type\") !== -1){var parts = url.split(\"&type\");url = parts[0] + \"&type=xml\";} else if(url.indexOf(\"?type\") !== -1){var parts = url.split(\"?type\");url = parts[0] + \"?type=xml\";} else if(url.indexOf(\"?date\") !== -1){url = url + \"&type=xml\";} else {url = url + \"?type=xml\";}window.location.replace(url);}function current(e){if(e.which == 13){var date = document.getElementById(\"dateInput\").value;if(date == \"\"){alert(\"Pleas enter a date or date range.\");return;}var url = window.location.href;if(url.indexOf(\"?\") !== -1){var parts = url.split(\"?\");url = parts[0];}url = url + \"?date=\" + date + \"&type=display\";window.location.replace(url);}}</script><title>Temperature</title></head><body><div id=\"wrapper\"><div id=\"DateForm\" style=\"margin-left:39.45%; margin-bottom:2%;\" ><p style=\"Color:white; padding-top:1%; margin-left:3%;\">Enter Date or Range</p><input id=\"dateInput\" onkeypress=\"current(event);\" type=\"text\" style=\"length:5em; height:1.1em;\"/></div><div id=\"xml\" style=\"margin:auto; padding-top:0.01%; padding-bottom:0,01%;\"  onclick=\"xml();\"><p>Download XML</p></div><table><tr><th>Date</th><th>Time</th><th>Temperature</th>");
 
                         while (reader.Read())
                         {
@@ -406,9 +293,10 @@ namespace tempPlugin
                 } // end reader using
             } // end connection using
             }
-            catch (System.Data.SqlClient.SqlException)
+            catch (System.Data.SqlClient.SqlException e)
             {
-                return "ERROR: There are no whitespaces allowed in the date";
+               // return "ERROR: An error ocurred within the database.";
+                return e.Message;
             }
 
             return answer.ToString();

@@ -39,12 +39,20 @@
 <script>
 
 	function xml(){
-		var url = window.location.href;		
+		var url = window.location.href;
+		
 		if(url.indexOf("&type") !== -1){
 			var parts = url.split("&type");
-			url = parts[0];
+			url = parts[0] + "&type=xml";
+		} else if(url.indexOf("?type") !== -1){
+			var parts = url.split("?type");
+			url = parts[0] + "?type=xml";
+		} else if(url.indexOf("?date") !== -1){
+			url = url + "&type=xml";
+		} else {
+			url = url + "?type=xml";
 		}
-		url = url + "&type=xml";
+		
 		window.location.replace(url);
 		
 	}
@@ -52,6 +60,10 @@
 	function current(e){
 		if(e.which == 13){	
 		var date = document.getElementById("dateInput").value;
+		if(date == ""){
+			alert("Pleas enter a date or date range.");
+			return;
+		}
 		
 		var url = window.location.href;
 		
@@ -60,7 +72,7 @@
 			url = parts[0];
 		}
 		
-		url = url + "?date=" + date + "&type=current";
+		url = url + "?date=" + date + "&type=display";
 		
 		window.location.replace(url);
 		}	
