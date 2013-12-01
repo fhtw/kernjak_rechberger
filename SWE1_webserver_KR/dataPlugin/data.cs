@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SWE1_webserver_KR;
+using System.IO;
 
 namespace dataPlugin
 {
@@ -27,10 +28,15 @@ namespace dataPlugin
             }
         }
 
-        public string handleRequest(Dictionary<string, string> data)
+        public void handleRequest(Dictionary<string, string> data, StreamWriter OutPutStream)
         {
+            OutPutStream.WriteLine("HTTP/1.0 200 OK");
+            OutPutStream.WriteLine("Content-Type: text/html");
+            OutPutStream.WriteLine("Connection: close");
+            OutPutStream.WriteLine("");
 
-            return "<p>Hello World <br/> Data</p>";
+            OutPutStream.WriteLine("<h2>Data Plugin</h2>");
+            return;
         }
     }
 }

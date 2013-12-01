@@ -138,17 +138,21 @@ namespace SWE1_webserver_KR
 
                    pluginM plugins = new pluginM();
                    plugins.loadPlugins();
+
                    List<string> names = plugins.getNames();
 
-                   string response = plugins.handleRequest(url, data);
-                   if(response[0] == 'x'){
+                   plugins.handleRequest(url, data, OutPutStream);
+                   /*if(response[0] == 'x'){
                        response = response.Substring(1, response.Length - 1);
                        writeSuccess("text/xml");
                    } else {
                        writeSuccess();
                    }
                    OutPutStream.WriteLine(response);
+                    
+                    */
                    /*
+                    
                    OutPutStream.WriteLine("<html><body><h1>test server</h1>");
                    OutPutStream.WriteLine("Current Time: " + DateTime.Now.ToString());
                    OutPutStream.WriteLine("url : {0}", url);

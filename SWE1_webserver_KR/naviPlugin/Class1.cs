@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.IO;
 //using System.Device.Location;
 using SWE1_webserver_KR;
 
@@ -11,13 +12,12 @@ namespace naviPlugin
 {
     public class naviPlugin : iPlugin
     {
-        private struct Address
-        {
-           public string City;
-           public int PostalCode;
-        }
+
         private static Mutex mutex = new Mutex();
-        private static Dictionary<string, List<Address>> mapData = new Dictionary<string, List<Address>>();
+        private static DateTime lastRefresh = default(DateTime);
+        private static Dictionary<string, HashSet<string>> mapData = new Dictionary<string, HashSet<string>>();
+        private static bool locked = false;
+ //       private static List<Address> testdata;
 
 
         public string getName()
@@ -37,11 +37,66 @@ namespace naviPlugin
             }
         }
 
-        public string handleRequest(Dictionary<string, string> data)
+        public void handleRequest(Dictionary<string, string> data, StreamWriter OutPutStream)
         {
-            loadData();
+            StringBuilder sb = new StringBuilder();
+                
+                if(lastRefresh == default(DateTime)){
 
-            return "<html><head></head><body><p>Hello World <br/> Navi</p></body></html>";
+                    sb.Append("<!DOCTYPE html><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /><style>#wrapper{width:39%;height:100%;background-color:grey;margin:auto;}#StreetForm{margin-left:40%;margin-bottom:1%;}#last_refresh{float:left;color: #DDDDDD;margin-left: 1%;margin-top: 1%;}#refresh{color:white;width:9em;cursor:pointer;padding-top:3%;padding-left:0.9%;}#refresh p{background-color:black;padding-left:9%;}h2{margin-left:1%;}li span{color: white;}</style><script src=\"http://code.jquery.com/jquery-latest.min.js\"        type=\"text/javascript\"></script><script>function refresh(){var url = window.location.href;if(url.indexOf(\"?\") !== -1){var parts = url.split(\"?\");url = parts[0] + \"?operation=refresh\";} else {url = url + \"?operation=refresh\";}window.location.replace(url);}function StreetSearch(e){if(e.which == 13){var street = document.getElementById(\"streetInput\").value;if(street == \"\"){alert(\"Please enter a Street Name\");return;}var url = window.location.href;if(url.indexOf(\"?\") !== -1){var parts = url.split(\"?\");url = parts[0];}url = url + \"?street=\" + street;window.location.replace(url);}}</script><title>Navi</title></head><body><div id=\"wrapper\"><p id=\"last_refresh\">Last Map Data Refresh: never</p><div id=\"refresh\" onclick=\"refresh();\"><p>Refresh Map Data</p></div><div id=\"StreetForm\" style=\"margin-left:28.45%; margin-bottom:2%;\" ><p style=\"Color:white; padding-top:0.1%; margin-left:0.1%; margin-bottom:0.5%;\">Please enter a Street</p><input id=\"streetInput\" onkeypress=\"StreetSearch(event);\" type=\"text\" style=\"width:20em; height:1.1em;\"/></div>");
+                } else {
+                    sb.AppendFormat("<!DOCTYPE html><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /><style>#wrapper{width:39%;height:100%;background-color:grey;margin:auto;}#StreetForm{margin-left:40%;margin-bottom:1%;}#last_refresh{float:left;color: #DDDDDD;margin-left: 1%;margin-top: 1%;}#refresh{color:white;width:9em;cursor:pointer;padding-top:3%;padding-left:0.9%;}#refresh p{background-color:black;padding-left:9%;}h2{margin-left:1%;}li span{color: white;}</style><script src=\"http://code.jquery.com/jquery-latest.min.js\"        type=\"text/javascript\"></script><script>function refresh(){var url = window.location.href;if(url.indexOf(\"?\") !== -1){var parts = url.split(\"?\");url = parts[0] + \"?operation=refresh\";} else {url = url + \"?operation=refresh\";}window.location.replace(url);}function StreetSearch(e){if(e.which == 13){var street = document.getElementById(\"streetInput\").value;if(street == \"\"){alert(\"Please enter a Street Name\");return;}var url = window.location.href;if(url.indexOf(\"?\") !== -1){var parts = url.split(\"?\");url = parts[0];}url = url + \"?street=\" + street;window.location.replace(url);}}</script><title>Navi</title></head><body><div id=\"wrapper\"><p id=\"last_refresh\">Last Map Data Refresh: {0}</p><div id=\"refresh\" onclick=\"refresh();\"><p>Refresh Map Data</p></div><div id=\"StreetForm\" style=\"margin-left:28.45%; margin-bottom:2%;\" ><p style=\"Color:white; padding-top:0.1%; margin-left:0.1%; margin-bottom:0.5%;\">Please enter a Street</p><input id=\"streetInput\" onkeypress=\"StreetSearch(event);\" type=\"text\" style=\"width:20em; height:1.1em;\"/></div>", lastRefresh.ToString("dd.MM.yyyy HH:mm:ss"));
+                }
+
+            if(data.ContainsKey("operation"))
+            {
+                if(data["operation"].Equals("refresh"))
+                {
+                    if(locked == true){
+                        sb.Append("<h3>The Map Data is already being updated. Please try entering a street in a few Minutes.</h3></div></body></html>");
+                        WriteResponse(sb.ToString(), "text/html", OutPutStream);
+                        return;
+                    }
+
+                    sb.Append("<h3>The Map Data is being updated. Please try entering a street in a few Minutes.</h3>");
+                    WriteResponse(sb.ToString(), "text/html", OutPutStream);
+                    OutPutStream.Flush();
+
+                    mutex.Close();
+                    locked = true;
+                    loadData();
+                    mutex.ReleaseMutex();
+                    locked = false;
+                    
+
+                } else if(data["operation"].Equals("dump")){
+
+                    loadData();
+                    foreach(KeyValuePair<string, HashSet<string>> entry in mapData ){
+                        sb.AppendFormat("<h2>{0}</h2>",entry.Key);
+                        foreach(string place in entry.Value){
+                            sb.AppendFormat("<p>{0}</p>", place);
+                        }
+                
+                    }
+
+                }
+            } else if(data.ContainsKey("street")){
+
+                if(!mapData.ContainsKey(data["street"])){
+                    sb.Append("<h2>The specified Street could not be found.</h2>");
+                } else {
+                    sb.AppendFormat("<h2>{0}</h2><ul>",data["street"]);
+
+                    foreach(string place in mapData[data["street"]]){
+                        sb.AppendFormat("<li><span>{0}</span></li>", place);
+                    }
+                }
+            }
+
+            sb.Append("</div></body></html>");
+            WriteResponse(sb.ToString(), "text/html", OutPutStream);
+            return;
         }
 
         private void loadData()
@@ -59,7 +114,8 @@ namespace naviPlugin
                         }
                     }
                 } // read from file
-            } // open from file        
+            } // open from file   
+            lastRefresh = DateTime.Now;
         }
 
         private void parseOsm(System.Xml.XmlTextReader xml)
@@ -68,7 +124,7 @@ namespace naviPlugin
             {
                 while(osm.Read())
                 {
-                    if(osm.NodeType == System.Xml.XmlNodeType.Element && (osm.Name == "Node" || osm.Name == "way"))
+                    if(osm.NodeType == System.Xml.XmlNodeType.Element && (osm.Name == "Node" || osm.Name == "way" || osm.Name == "relation"))
                     {
                         parseElement(osm);
                     }
@@ -78,56 +134,58 @@ namespace naviPlugin
 
         private void parseElement( System.Xml.XmlReader osm)
         {
-            Address address = new Address();
-            string street = "";
             using(var element = osm.ReadSubtree())
             {
+                string street = string.Empty;
+                string city = string.Empty;
+                int state = 0;
+
                 while(element.Read())
                 {
+                    
                     if(element.NodeType == System.Xml.XmlNodeType.Element && element.Name == "tag")
                     {
                         //readTag(element);
                         string tag = element.GetAttribute("k");
                         string value = element.GetAttribute("v");
                         
+                        
 
                         switch (tag)
                         {
                             case "addr:city":
-                                address.City = value;
-                                break;
-
-                            case "addr:postcode":
-                                address.PostalCode = Convert.ToInt32(value);
+                                city = value;
+                                state++;
                                 break;
 
                             case "addr:street":
                                 street = value;
+                                state++;
                                 break;
 
                         }
 
                     }
-//                    mapData.Add(street, address);
+                    if(state == 2){
+                        if(!mapData.ContainsKey(street)){
+                        mapData.Add(street, new HashSet<string>());
+                        }
+                        mapData[street].Add(city);
+                    }        
 
                 }
             } // use xml subtree
-            if(!street.Equals("")){
-                if (!mapData.ContainsKey(street))
-                {
-                    mapData.Add(street, new List<Address>());
-                    mapData[street].Add(address);
-                }
-                else
-                {
-                    mapData[street].Add(address);
-                }
-            }
-
         }
 
-   //     private Address(System.Xml.XmlReader element)
+        private void WriteResponse(string content, string type, StreamWriter OutPutStream)
+        {
+            OutPutStream.WriteLine("HTTP/1.0 200 OK");
+            OutPutStream.WriteLine("Content-Type: " + type);
+            OutPutStream.WriteLine("Connection: close");
+            OutPutStream.WriteLine("");
 
+            OutPutStream.WriteLine(content);
+        }
 
     }
 }

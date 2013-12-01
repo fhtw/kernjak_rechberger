@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using SWE1_webserver_KR;
 using System.Globalization;
+using System.IO;
 
 namespace tempPlugin
 {
@@ -30,7 +31,7 @@ namespace tempPlugin
             }
         }
 
-        public string handleRequest(Dictionary<string, string> data)
+        public void handleRequest(Dictionary<string, string> data, StreamWriter OutPutStream)
         {
 
             if (!data.ContainsKey("type"))
@@ -45,6 +46,7 @@ namespace tempPlugin
 
             StringBuilder answer = new StringBuilder();
             string query;
+            string type = "text/html";
             
 
             int count = data["date"].Length - data["date"].Replace(".", "").Length;
@@ -70,12 +72,14 @@ namespace tempPlugin
                    
                     if(! (DateTime.TryParse(range[1], culture ,dateStyle,out end)))
                     {
-                        return "Invalid Date";
+                        WriteResponse("Invalid Date", type, OutPutStream);
+                        return;
                     }
                     end = end.AddDays(1);
                     if (!(DateTime.TryParse(range[0], culture, dateStyle, out start)))
                     {
-                        return "Invalid Date";
+                        WriteResponse("Invalid Date", type, OutPutStream);
+                        return;
                     }
                 }
                 else if (countStart == 2 && countEnd == 1)
@@ -83,11 +87,13 @@ namespace tempPlugin
 
                     if(! (DateTime.TryParse(range[1].Insert(0, "1."), culture ,dateStyle,out end)))
                     {
-                        return "Invalid Date";
+                        WriteResponse("Invalid Date", type, OutPutStream);
+                        return;
                     }
                     if (!(DateTime.TryParse(range[0], culture, dateStyle, out start)))
                     {
-                        return "Invalid Date";
+                        WriteResponse("Invalid Date", type, OutPutStream);
+                        return;
                     }
                 }
                 else if (countStart == 2 && countEnd == 0)
@@ -95,11 +101,13 @@ namespace tempPlugin
 
                     if(! (DateTime.TryParse(range[1].Insert(0, "1.1."), culture ,dateStyle,out end)))
                     {
-                        return "Invalid Date";
+                        WriteResponse("Invalid Date", type, OutPutStream);
+                        return;
                     }
                     if (!(DateTime.TryParse(range[0], culture, dateStyle, out start)))
                     {
-                        return "Invalid Date";
+                        WriteResponse("Invalid Date", type, OutPutStream);
+                        return;
                     }
                 }
                 else if (countStart == 1 && countEnd == 2)
@@ -107,12 +115,14 @@ namespace tempPlugin
 
                     if (!(DateTime.TryParse(range[1], culture, dateStyle, out end)))
                     {
-                        return "Invalid Date";
+                        WriteResponse("Invalid Date", type, OutPutStream);
+                        return;
                     }
                     end = end.AddDays(1);
                     if (!(DateTime.TryParse(range[0].Insert(0, "1."), culture, dateStyle, out start)))
                     {
-                        return "Invalid Date";
+                        WriteResponse("Invalid Date", type, OutPutStream);
+                        return;
                     }
 
                 }
@@ -121,12 +131,14 @@ namespace tempPlugin
 
                     if (!(DateTime.TryParse(range[1], culture, dateStyle, out end)))
                     {
-                        return "Invalid Date";
+                        WriteResponse("Invalid Date", type, OutPutStream);
+                        return;
                     }
                     end = end.AddDays(1);
                     if (!(DateTime.TryParse(range[0].Insert(0, "1.1."), culture, dateStyle, out start)))
                     {
-                        return "Invalid Date";
+                        WriteResponse("Invalid Date", type, OutPutStream);
+                        return;
                     }
                 }
                 else if (countStart == 0 && countEnd == 0)
@@ -134,11 +146,13 @@ namespace tempPlugin
 
                     if (!(DateTime.TryParse(range[1].Insert(0, "1.1."), culture, dateStyle, out end)))
                     {
-                        return "Invalid Date";
+                        WriteResponse("Invalid Date", type, OutPutStream);
+                        return;
                     }
                     if (!(DateTime.TryParse(range[0].Insert(0, "1.1."), culture, dateStyle, out start)))
                     {
-                        return "Invalid Date";
+                        WriteResponse("Invalid Date", type, OutPutStream);
+                        return;
                     }
                 }
                 else if (countStart == 0 && countEnd == 1)
@@ -146,11 +160,13 @@ namespace tempPlugin
 
                     if (!(DateTime.TryParse(range[1].Insert(0, "1."), culture, dateStyle, out end)))
                     {
-                        return "Invalid Date";
+                        WriteResponse("Invalid Date", type, OutPutStream);
+                        return;
                     }
                     if (!(DateTime.TryParse(range[0].Insert(0, "1.1."), culture, dateStyle, out start)))
                     {
-                        return "Invalid Date";
+                        WriteResponse("Invalid Date", type, OutPutStream);
+                        return;
                     }
                 }
                 else if (countStart == 1 && countEnd == 0)
@@ -158,11 +174,13 @@ namespace tempPlugin
 
                     if (!(DateTime.TryParse(range[1].Insert(0, "1.1."), culture, dateStyle, out end)))
                     {
-                        return "Invalid Date";
+                        WriteResponse("Invalid Date", type, OutPutStream);
+                        return;
                     }
                     if (!(DateTime.TryParse(range[0].Insert(0, "1."), culture, dateStyle, out start)))
                     {
-                        return "Invalid Date";
+                        WriteResponse("Invalid Date", type, OutPutStream);
+                        return;
                     }
                 }
                 else if (countStart == 1 && countEnd == 1)
@@ -170,16 +188,19 @@ namespace tempPlugin
 
                     if (!(DateTime.TryParse(range[1].Insert(0, "1."), culture, dateStyle, out end)))
                     {
-                        return "Invalid Date";
+                        WriteResponse("Invalid Date", type, OutPutStream);
+                        return;
                     }
                     if (!(DateTime.TryParse(range[0].Insert(0, "1."), culture, dateStyle, out start)))
                     {
-                        return "Invalid Date";
+                        WriteResponse("Invalid Date", type, OutPutStream);
+                        return;
                     }
                 }
                 else
                 {
-                    return "Invalid Date Entered";
+                    WriteResponse("Invalid Date", type, OutPutStream);
+                    return;
                 }
                 try{
                     myparam[0] = new SqlParameter("@begin", System.Data.SqlDbType.DateTime);
@@ -190,7 +211,8 @@ namespace tempPlugin
                 }
                 catch (System.Data.SqlTypes.SqlTypeException)
                 {
-                    return "ERROR: Out of Range Date";
+                    WriteResponse("ERROR:Date Out of Range", type, OutPutStream);
+                    return;
                 }
             } else {
 
@@ -222,7 +244,8 @@ namespace tempPlugin
                 }
                 else
                 {
-                    return "Invalid Date Entered";
+                    WriteResponse("Invalid Date", type, OutPutStream);
+                    return;
                 }
             }
             try{
@@ -244,7 +267,8 @@ namespace tempPlugin
                         XmlNode root, dateNode, measureNode;
                         XmlAttribute date, time;
 
-                        answer.Append("x<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
+                        type = "text/xml";
+                        answer.Append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
 
                         root = xml.CreateElement("TempXML");
                         xml.AppendChild(root);
@@ -296,10 +320,21 @@ namespace tempPlugin
             catch (System.Data.SqlClient.SqlException e)
             {
                // return "ERROR: An error ocurred within the database.";
-                return e.Message;
+                WriteResponse(e.Message, type, OutPutStream);
+                return;
             }
 
-            return answer.ToString();
+            WriteResponse(answer.ToString(), type, OutPutStream);
+            return;
+        }
+
+        private void WriteResponse(string content, string type, StreamWriter OutPutStream){
+            OutPutStream.WriteLine("HTTP/1.0 200 OK");
+            OutPutStream.WriteLine("Content-Type: " + type);
+            OutPutStream.WriteLine("Connection: close");
+            OutPutStream.WriteLine("");
+
+            OutPutStream.WriteLine(content);
         }
     }
 }

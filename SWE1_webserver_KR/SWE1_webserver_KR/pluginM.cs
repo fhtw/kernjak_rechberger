@@ -36,16 +36,18 @@ namespace SWE1_webserver_KR
 
         }
 
-        public string handleRequest(string url, Dictionary<string, string> data)
+        public void handleRequest(string url, Dictionary<string, string> data, StreamWriter outputStream)
         {
             foreach (iPlugin addin in plugins)
                 {
                     if (addin.checkRequest(url) == true)
                     {   
-                        return(addin.handleRequest(data));
+                       addin.handleRequest(data, outputStream);
+                       return;
                     }
                 }
-            return "<h1>Plugin not available</h1>";
+            writeResponse("Plugin not available", "text/html", outputStream);
+            return;
         }
 
         public List<String> getNames()
@@ -59,6 +61,17 @@ namespace SWE1_webserver_KR
             }
 
             return names;
+        }
+
+        private void writeResponse(string content, string type, StreamWriter OutPutStream)
+        {
+            OutPutStream.WriteLine("HTTP/1.0 200 OK");
+            OutPutStream.WriteLine("Content-Type: " + type);
+            OutPutStream.WriteLine("Connection: close");
+            OutPutStream.WriteLine("");
+
+            OutPutStream.WriteLine(content);
+
         }
     }
 }
