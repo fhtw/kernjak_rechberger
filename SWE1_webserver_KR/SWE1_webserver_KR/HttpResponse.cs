@@ -22,6 +22,7 @@ namespace SWE1_webserver_KR
        {
            private TcpClient socket;
            private Server.MyHttpServer srv;
+           private pluginM plugins;
 
            private Stream inputStream;
            private StreamWriter outputStream;
@@ -37,10 +38,11 @@ namespace SWE1_webserver_KR
 
            private static int MAX_POST_SIZE = 10 * 1024 * 1024; // 10MB
             
-           internal ResponseProcessor (TcpClient s, Server.MyHttpServer lol)
+           internal ResponseProcessor (TcpClient s, Server.MyHttpServer lol, pluginM plugin)
            {
                this.socket = s;
                this.srv = lol;
+               this.plugins = plugin;
            }
 
 
@@ -62,7 +64,10 @@ namespace SWE1_webserver_KR
            {
                // we can't use a StreamReader for input, because it buffers up extra data on us inside it's
                // "processed" view of the world, and we want the data raw after the headers
+             
                inputStream = new BufferedStream(socket.GetStream());
+
+               string test = inputStream.ToString();
 
                // we probably shouldn't be using a streamwriter for all output from handlers either
                outputStream = new StreamWriter(new BufferedStream(socket.GetStream()));
@@ -136,8 +141,8 @@ namespace SWE1_webserver_KR
                    Console.WriteLine("request: {0}", url);
                   // writeSuccess("text/xml");
 
-                   pluginM plugins = new pluginM();
-                   plugins.loadPlugins();
+       //            pluginM plugins = new pluginM();
+    //               plugins.loadPlugins();
 
                    List<string> names = plugins.getNames();
 

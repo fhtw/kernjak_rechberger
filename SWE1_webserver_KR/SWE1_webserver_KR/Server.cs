@@ -41,10 +41,14 @@ namespace SWE1_webserver_KR
             {
                 listener = new TcpListener(port);
                 listener.Start();
+
+                pluginM plugins = new pluginM();
+                plugins.loadPlugins();
+
                 while (is_active)
                 {
                     TcpClient s = listener.AcceptTcpClient();
-                    ResponseProcessor processor = new ResponseProcessor(s, this);
+                    ResponseProcessor processor = new ResponseProcessor(s, this, plugins);
                     Thread thread = new Thread(new ThreadStart(processor.process));
                     thread.Start();
                     Thread.Sleep(1);
