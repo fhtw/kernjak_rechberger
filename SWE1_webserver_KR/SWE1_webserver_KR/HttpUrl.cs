@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web;
 using System.Collections.Generic;
 using System.Collections;
 using System.ComponentModel;
@@ -23,6 +24,7 @@ namespace SWE1_webserver_KR
 
         public void CWebURL(string webUrl)
         {
+            webUrl = WebUtility.UrlDecode(webUrl);
             string[] parts = webUrl.Split('?');
             this._webAddress = parts[0];
             if (parts.Length > 1)
@@ -47,9 +49,12 @@ namespace SWE1_webserver_KR
             string[] pairs = parameters.Split('&');
             foreach(string pair in pairs)
             {
-                string[] parts = pair.Split('=');
-                parts[1] = parts[1].Replace("%20", " ");
-                _webParameters.Add(parts[0].ToString(), parts[1].ToString());
+                if(pair.Contains('=')){
+                    string[] parts = pair.Split('=');
+                    //parts[1] = HttpUtility.UrlPathEncode
+                    //parts[1] = parts[1].Replace("%20", " ");
+                    _webParameters.Add(parts[0].ToString(), parts[1].ToString());
+                }
             }
         }
 

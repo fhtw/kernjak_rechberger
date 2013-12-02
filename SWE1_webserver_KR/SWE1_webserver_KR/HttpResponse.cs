@@ -25,6 +25,7 @@ namespace SWE1_webserver_KR
            private pluginM plugins;
 
            private Stream inputStream;
+           private StreamReader reader;
            private StreamWriter outputStream;
            public StreamWriter OutPutStream { get { return outputStream; } }
            HttpUrl hurl = new HttpUrl();
@@ -46,11 +47,12 @@ namespace SWE1_webserver_KR
            }
 
 
-           private string streamReadLine(Stream inputStream)
+           private string streamReadLine(StreamReader reader)
            {
                int next_char;
                string data = "";
-               while (true)
+     //          MemoryStream memStream = new MemoryStream();
+               while (true)   
                {
                    next_char = inputStream.ReadByte();
                    if (next_char == '\n') { break; }
@@ -66,18 +68,17 @@ namespace SWE1_webserver_KR
                // "processed" view of the world, and we want the data raw after the headers
              
                inputStream = new BufferedStream(socket.GetStream());
-
-               string test = inputStream.ToString();
+               reader = new StreamReader(inputStream, Encoding.UTF8);
 
                // we probably shouldn't be using a streamwriter for all output from handlers either
                outputStream = new StreamWriter(new BufferedStream(socket.GetStream()));
                try
                {
-                   hr.parseRequest(streamReadLine(inputStream));
+                   hr.parseRequest(reader.ReadLine());
                    bool trigger = true;
                    while (trigger)
                    {
-                       string input = streamReadLine(inputStream);
+                       string input = reader.ReadLine();
                        if (input == "")
                        { break; }
                        else 
@@ -100,7 +101,9 @@ namespace SWE1_webserver_KR
                }
                outputStream.Flush();
                // bs.Flush(); // flush any remaining output
-               inputStream = null; outputStream = null; // bs = null;            
+      //         inputStream = null;  // bs = null;
+               reader = null;
+               outputStream = null; // bs = null;            
                socket.Close();
            }
 
