@@ -80,7 +80,7 @@ namespace naviPlugin
 
                 } else if(data["operation"].Equals("dump")){
 
-                    mutex.WaitOne();
+                  //  mutex.WaitOne();
                     loadData();
                   //  mutex.ReleaseMutex();
                     foreach(KeyValuePair<string, HashSet<string>> entry in mapData ){
