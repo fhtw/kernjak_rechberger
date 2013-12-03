@@ -86,5 +86,27 @@ namespace WebserverTests
             CollectionAssert.AreEquivalent(actual_parameters, expected_parameters, "The parameters were not parsed correctly");
 
         }
+
+        [TestMethod]
+        public void URL_with_unicode_chars()
+        {
+            string test_Url = "https://myserver.com?street=Wiener Straße";
+            string expected_Url = "https://myserver.com";
+
+            test_Url = System.Net.WebUtility.UrlEncode(test_Url);
+
+            Dictionary<string, string> expected_parameters = new Dictionary<string, string>();
+            expected_parameters.Add("street", "Wiener Straße");
+
+            HttpUrl URL_Handler = new HttpUrl();
+            URL_Handler.CWebURL(test_Url);
+
+            string actual_Address = URL_Handler.WebAddress;
+            Dictionary<string, string> actual_parameters = URL_Handler.WebParameters;
+
+            Assert.AreEqual(actual_Address, expected_Url, "Address was not parsed correctly");
+            CollectionAssert.AreEquivalent(actual_parameters, expected_parameters, "The parameters were not parsed correctly");
+
+        }
     }
 }
