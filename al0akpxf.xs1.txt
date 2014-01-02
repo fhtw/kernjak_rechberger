@@ -1,0 +1,22 @@
+﻿imporved navi, temp geneerates new measurements
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch martin
+# Changes to be committed:
+#   (use "git reset HEAD^1 <file>..." to unstage)
+#
+#	modified:   SWE1_webserver_KR/naviPlugin/Class1.cs
+#	modified:   SWE1_webserver_KR/tempPlugin/temp.cs
+#
+# Changes not staged for commit:
+#   (use "git add <file>..." to update what will be committed)
+#   (use "git checkout -- <file>..." to discard changes in working directory)
+#
+#	modified:   .gitignore
+#
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+#
+#	p22zmtin.rxa.txt
+
