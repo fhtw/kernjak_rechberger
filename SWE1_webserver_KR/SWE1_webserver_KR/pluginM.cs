@@ -46,7 +46,7 @@ namespace SWE1_webserver_KR
                        return;
                     }
                 }
-            writeResponse("Plugin not available", "text/html", outputStream);
+            writeResponse("<html><title>404 NOT FOUND</title><body><h1>404 Plugin Not Found</h1></body></html>", outputStream);
             return;
         }
 
@@ -63,10 +63,10 @@ namespace SWE1_webserver_KR
             return names;
         }
 
-        private void writeResponse(string content, string type, StreamWriter OutPutStream)
+        private void writeResponse(string content, StreamWriter OutPutStream)
         {
-            OutPutStream.WriteLine("HTTP/1.0 200 OK");
-            OutPutStream.WriteLine("Content-Type: " + type);
+            OutPutStream.WriteLine("HTTP/1.0 404 NOT FOUND");
+            OutPutStream.WriteLine("Content-Type: text/html" );
             OutPutStream.WriteLine("Connection: close");
             OutPutStream.WriteLine("");
 

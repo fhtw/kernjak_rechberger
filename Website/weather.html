@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<style>
+	#wrapper{
+		width:39%;
+		height:100%;
+		background-color:grey;
+		margin:auto;
+	}
+	#wrapper p{
+		color:white;
+	}
+	#StreetForm{
+		margin-left: 0;
+		margin-top: 0%;
+		margin-bottom: 0.5%;
+		padding-top: 1%;
+	}
+	h2{
+		margin-left:1%;
+	}
+	li span{
+		color: white;
+	}
+	#text{
+		margin-left:9.45%;
+		margin-top:1%;
+		margin-bottom:0.1%;
+	}
+	.subtext{
+		margin-top:1%;
+		margin-bottom: 0%;
+		margin-left:20%;
+	}
+</style>
+<script src="http://code.jquery.com/jquery-latest.min.js"
+        type="text/javascript"></script>
+<script>
+
+	
+	function sendData(e){
+		if(e.which == 13){	
+		var country = document.getElementById("countryInput").value;
+		var city = document.getElementById("cityInput").value;
+		var url = window.location.href;
+		
+		if(url.indexOf("?") !== -1){
+				var parts = url.split("?");
+				url = parts[0];
+		}
+		
+		if(country == ""){
+			alert("Please enter a Country");
+			return;
+		}
+		
+		if(city == ""){
+			
+			url = url + "?country=" + country;
+			
+		} else {
+			url = url + "?country=" + country +  "&city=" + city;
+		}
+			window.location.replace(url);
+		}	
+	}
+	
+</script>
+<title>Weather</title>
+</head>
+<body>
+	<div id="wrapper">
+		<div id="StreetForm">
+			<h3 id="text">Enter a Country to get its weather stations. <br/> Enter a Country and a City to get the weather.</h3>
+			<p class="subtext">Country:</p>
+			<input id="countryInput" class="subtext" onkeypress="sendData(event);" type="text" style="width:10em; height:1.1em;"/>
+			<p class="subtext">City:</p>
+			<input id="cityInput" class="subtext" onkeypress="sendData(event);" type="text" style="width:10em; height:1.1em;"/>
+		</div>
+		<!-- Dynamic Content -->
+		<h2> Street Name </h2>
+		<ul>
+			<li> <span>City 1</span> </li>
+			<li> <span>City 2</span> </li>
+		</ul>	
+	</div>
+	
+	
+</body>
+</html>
