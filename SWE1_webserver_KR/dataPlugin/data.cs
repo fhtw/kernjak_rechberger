@@ -29,12 +29,111 @@ namespace dataPlugin
         }
 
         public void handleRequest(Dictionary<string, string> data, StreamWriter OutPutStream)
-        {
-            Stream fs = File.Open("../../index.html", FileMode.Open);
+        { 
+     
+
+            //with parameters
+            if(data.Count>0)
+            
+            {
+                string filename = "";
+
+                foreach (KeyValuePair<string, string> entry in data)
+                {
+                    if (entry.Key == "file")
+                    {
+                        filename = entry.Value;
+                                           }
+                }
+                byte[] file;
+                filename = "../../DATA/" + filename;
+                FileStream fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read);
+
+                file = new byte[fileStream.Length];
+
+                fileStream.Read(file, 0, Convert.ToInt32(fileStream.Length));
+
+               
+               int ContentLength = file.Length;
+
+                string[] fileparts = filename.Split('.');
+                string ContentType = "";
+                if (fileparts[fileparts.Length - 1] == "jpeg" || fileparts[fileparts.Length - 1] == "jpg")
+                {
+                    //jpeg
+                    ContentType = "image/jpeg";
+                }
+                else if (fileparts[fileparts.Length - 1] == "png")
+                {
+                    //png
+                  ContentType = "image/png";
+                }
+                else if (fileparts[fileparts.Length - 1] == "gif")
+                {
+                    //gif
+                   ContentType = "image/gif";
+                }
+                else if (fileparts[fileparts.Length - 1] == "html" || fileparts[fileparts.Length - 1] == "htm" || fileparts[fileparts.Length - 1] == "xhtml")
+                {
+                    //html
+                    ContentType = "text/html";
+                }
+                else if (fileparts[fileparts.Length - 1] == "xml")
+                {
+                    //xml
+                    ContentType = "text/xml";
+                }
+                else if (fileparts[fileparts.Length - 1] == "txt" || fileparts[fileparts.Length - 1] == "ini" || fileparts[fileparts.Length - 1] == "config")
+                {
+                    //rawtext
+                    ContentType = "text/plain";
+                }
+                else
+                {
+                    //octet-stream
+                    string ContentDisposition = filename;
+                    ContentType = "application/octet-stream";
+                }
+
+
+                OutPutStream.WriteLine("HTTP/1.0 200 OK");
+                OutPutStream.WriteLine("Content-Type: "+ContentType);
+                OutPutStream.WriteLine("Content-Length: " + ContentLength);
+                OutPutStream.WriteLine("Connection: close");
+                OutPutStream.WriteLine("");
+                OutPutStream.BaseStream.Write(file,0,file.Length);
+            }
+             
+                //no Parameters
+
+            else{
+            string path = "../../DATA";
+            String sResponse = "";
+            string[] filePaths = Directory.GetFiles(path);
+            string sFiles = "";
+            sResponse = @"
+                            <html>
+                                <head>
+                                    <title>DATA by Kernjak und Rechberger</title>
+		                            </head>
+                                <body>
+                                    <h1>Static File Plugin</h1>
+                                    <p><i>Folgende Dateien stehen zum Download bereit:</i></p>";
+            foreach (var buffer in filePaths)
+            {
+                sFiles = buffer.Substring(buffer.LastIndexOf("\\")).Remove(0, 1);
+                sResponse += "<p><a href='?file=" + sFiles + "'>" + sFiles + @"</a></p>";
+            }
+            sResponse += @"   
+                                </body>
+                            </html>";
+          
+            
+            /* Stream fs = File.Open("../../index.html", FileMode.Open);
             BinaryReader reader = new BinaryReader(fs);
             byte[] bytes = new byte[fs.Length];
             int read;
-            String sResponse = "";
+           
             int iTotBytes = 0;
             while ((read = reader.Read(bytes, 0, bytes.Length)) != 0)
             {
@@ -45,19 +144,22 @@ namespace dataPlugin
 
             }
             reader.Close();
-            fs.Close();
+            fs.Close();*/
+
+
             //  writeSuccess("text/html", bytes.Length);
             //OutPutStream.Write(sResponse);
 //            return "d" + size.ToString() + "ö" + sResponse;
 
             OutPutStream.WriteLine("HTTP/1.0 200 OK");
             OutPutStream.WriteLine("Content-Type: text/html");
-            OutPutStream.WriteLine("Content-Length: " + Convert.ToString(bytes.Length));
+          //  OutPutStream.WriteLine("Content-Length: " + Convert.ToString(bytes.Length));
             OutPutStream.WriteLine("Connection: close");
             OutPutStream.WriteLine("");
             OutPutStream.WriteLine(sResponse);
 
 //            OutPutStream.WriteLine("<h2>Data Plugin</h2>");
+            }
             return;
         }
     }

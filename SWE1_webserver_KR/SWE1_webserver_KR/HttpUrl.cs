@@ -21,7 +21,8 @@ namespace SWE1_webserver_KR
     {
         private string _webAddress;
         private Dictionary<string, string> _webParameters = new Dictionary<string, string>();
-
+        private int count = 0;
+        public int GetCount { get { return count; } }
         public void CWebURL(string webUrl)
         {
             webUrl = WebUtility.UrlDecode(webUrl);
@@ -55,6 +56,7 @@ namespace SWE1_webserver_KR
                     //parts[1] = parts[1].Replace("%20", " ");
                     _webParameters.Add(parts[0].ToString(), parts[1].ToString());
                 }
+                count++;
             }
         }
 
