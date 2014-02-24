@@ -101,6 +101,7 @@ namespace dataPlugin
                 OutPutStream.WriteLine("Content-Length: " + ContentLength);
                 OutPutStream.WriteLine("Connection: close");
                 OutPutStream.WriteLine("");
+                OutPutStream.Flush();
                 OutPutStream.BaseStream.Write(file,0,file.Length);
             }
              
